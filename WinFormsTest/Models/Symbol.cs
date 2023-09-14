@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinFormsTest
+namespace WinFormsTest.Models
 {
     class Symbol
     {
@@ -23,7 +23,7 @@ namespace WinFormsTest
 
         public Symbol()
         {
-            
+
         }
 
     }

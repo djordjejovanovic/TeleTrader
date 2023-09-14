@@ -1,17 +1,21 @@
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Runtime.Intrinsics.Arm;
+using System.Windows.Forms;
 using System.Xml.Linq;
+using WinFormsTest.Forms;
+using WinFormsTest.Models;
 
 namespace WinFormsTest
 {
-    public partial class Form1 : Form
+    public partial class Index : Form
     {
         private string selectedDbPath;
         private static SQLiteConnection connect = new SQLiteConnection(@"Data Source=");
 
-        public Form1()
+        public Index()
         {
             InitializeComponent();
         }
@@ -20,7 +24,7 @@ namespace WinFormsTest
         {
             openFileDialog1.ShowDialog();
             selectedDbPath = openFileDialog1.FileName;
-            tfPath.Text = selectedDbPath;
+            Program.dbPath = selectedDbPath;
 
             try
             {
@@ -32,20 +36,23 @@ namespace WinFormsTest
                 fmd.CommandType = CommandType.Text;
                 SQLiteDataReader rdr = fmd.ExecuteReader();
 
-                List<Type> typelList = new List<Type>();
+                List<Models.Type> typelList = new List<Models.Type>();
                 cbType.Items.Clear();
                 cbType.Items.Add("All");
                 cbType.SelectedItem = "All";
 
                 while (rdr.Read())
                 {
-                    Type type = new Type();
+                    Models.Type type = new Models.Type();
                     type.Id = (int)(long)rdr["Id"];
                     type.Name = (string)rdr["Name"];
 
                     typelList.Add(type);        //nema potrebe, ali moze da posluzi da se ima ceo objekat
                     cbType.Items.Add(type.Name);
                 }
+
+                if (typelList != null && typelList.Count != 0)
+                    Program.typeList = typelList;
 
                 rdr.Close();
                 typeLbl.Show();
@@ -70,12 +77,15 @@ namespace WinFormsTest
                     cbExchange.Items.Add(exchange.Name);
                 }
 
+                if (exchangelList != null && exchangelList.Count != 0)
+                    Program.exchangeList = exchangelList;
+
                 rdr.Close();
                 exchangeLbl.Show();
                 cbExchange.Show();
 
                 pretraziBtn.Show();
-                
+
             }
             catch (Exception ex)
             {
@@ -102,15 +112,14 @@ namespace WinFormsTest
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (tfPath.Text != null && tfPath.Text != "")
-                selectedDbPath = tfPath.Text;
+            if (Program.dbPath != null && Program.dbPath != "")
+                selectedDbPath = Program.dbPath;
 
             string type = (string)cbType.SelectedItem;
             string exchange = (string)cbExchange.SelectedItem;
 
             try
             {
-                connect = new SQLiteConnection(@"Data Source=" + selectedDbPath);
                 openConnection();
 
                 SQLiteCommand fmd = connect.CreateCommand();
@@ -147,7 +156,7 @@ namespace WinFormsTest
                 binding.DataSource = symbolList;
                 dataGridView1.DataSource = binding;
 
-                if(!addSymbolBtn.Visible)
+                if (!addSymbolBtn.Visible)
                     addSymbolBtn.Show();
                 if (!editSymbolBtn.Visible)
                     editSymbolBtn.Show();
@@ -182,5 +191,77 @@ namespace WinFormsTest
             else
                 return query + " AND t.Name = '" + type + "'" + " AND e.Name = '" + exchange + "'";
         }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void addSymbol_Click(object sender, EventArgs e)
+        {
+            AddSymbolForm addSymbolForm = new AddSymbolForm();
+
+            if (addSymbolForm.typeCb != null)
+            {
+                addSymbolForm.typeCb.Items.AddRange(Program.typeList.Select(x => x.Name).ToArray());
+                addSymbolForm.typeCb.SelectedIndex = 0;
+            }
+
+            if (addSymbolForm.exchangeCb != null)
+            {
+                addSymbolForm.exchangeCb.Items.AddRange(Program.exchangeList.Select(x => x.Name).ToArray());
+                addSymbolForm.exchangeCb.SelectedIndex = 0;
+            }
+
+            addSymbolForm.Show();
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            string message = "Da li zelite da obrisete Symbol(e)";
+            string title = "Close Window";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+            if (result == DialogResult.Yes)
+            {
+                if (dataGridView1.SelectedRows.Count > 0)
+                    foreach (DataGridViewRow row in dataGridView1.SelectedRows)
+                    {
+                        try
+                        {
+                            string name = (string)row.Cells[0].Value;
+                            string ticker = (string)row.Cells[1].Value;
+                            double price = (double)row.Cells[2].Value;
+                            string typeName = (string)row.Cells[3].Value;
+                            string exchangeName = (string)row.Cells[4].Value;
+
+                            openConnection();
+
+                            SQLiteCommand fmd = connect.CreateCommand();
+                            fmd.CommandType = CommandType.Text;
+                            fmd.CommandText = @"DELETE FROM Symbol WHERE Name = '" + name + "' AND Ticker = '" + ticker + "' AND " +
+                                                "Price = @Price";
+                            fmd.Parameters.AddWithValue("@Price", price);
+
+                            int rows = fmd.ExecuteNonQuery();
+                            if (rows == 0)
+                            {
+                                MessageBox.Show("Doslo je do greske! " + name + " nije obrisan.");
+                            }
+                            else
+                                dataGridView1.Rows.RemoveAt(row.Index);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        finally
+                        {
+                            closeConnection();
+                        }
+                    }
+            }
+        }
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace WinFormsTest
 {
-    partial class Form1
+    partial class Index
     {
         /// <summary>
         ///  Required designer variable.
@@ -40,6 +40,7 @@
             addSymbolBtn = new Button();
             editSymbolBtn = new Button();
             deleteSymbolBtn = new Button();
+            button1 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -52,6 +53,7 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(569, 324);
             dataGridView1.TabIndex = 0;
+            // dataGridView1.SelectionChanged += DataGridView_SelectionChanged;
             // 
             // pretraziBtn
             // 
@@ -89,9 +91,9 @@
             // 
             // selectPathBtn
             // 
-            selectPathBtn.Location = new Point(658, 12);
+            selectPathBtn.Location = new Point(642, 12);
             selectPathBtn.Name = "selectPathBtn";
-            selectPathBtn.Size = new Size(121, 29);
+            selectPathBtn.Size = new Size(137, 44);
             selectPathBtn.TabIndex = 4;
             selectPathBtn.Text = "Select db Path";
             selectPathBtn.UseVisualStyleBackColor = true;
@@ -133,6 +135,7 @@
             addSymbolBtn.Text = "Add symbol";
             addSymbolBtn.UseVisualStyleBackColor = true;
             addSymbolBtn.Visible = false;
+            addSymbolBtn.Click += addSymbol_Click;
             // 
             // editSymbolBtn
             // 
@@ -153,12 +156,24 @@
             deleteSymbolBtn.Text = "Delete symbol";
             deleteSymbolBtn.UseVisualStyleBackColor = true;
             deleteSymbolBtn.Visible = false;
+            deleteSymbolBtn.Click += deleteButton_Click;
             // 
-            // Form1
+            // button1
+            // 
+            button1.Location = new Point(658, 390);
+            button1.Name = "button1";
+            button1.Size = new Size(121, 39);
+            button1.TabIndex = 12;
+            button1.Text = "Form Close";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
+            // 
+            // Index
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(button1);
             Controls.Add(deleteSymbolBtn);
             Controls.Add(editSymbolBtn);
             Controls.Add(addSymbolBtn);
@@ -170,7 +185,7 @@
             Controls.Add(typeLbl);
             Controls.Add(pretraziBtn);
             Controls.Add(dataGridView1);
-            Name = "Form1";
+            Name = "Index";
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
@@ -191,5 +206,6 @@
         private Button addSymbolBtn;
         private Button editSymbolBtn;
         private Button deleteSymbolBtn;
+        private Button button1;
     }
 }

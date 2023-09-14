@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinFormsTest
+namespace WinFormsTest.Models
 {
-    class Type
+    class Exchange
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public Type()
+        public Exchange()
         {
-            
+
         }
     }
 }
