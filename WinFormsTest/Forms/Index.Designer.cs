@@ -53,7 +53,6 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(569, 324);
             dataGridView1.TabIndex = 0;
-            // dataGridView1.SelectionChanged += DataGridView_SelectionChanged;
             // 
             // pretraziBtn
             // 
@@ -146,6 +145,7 @@
             editSymbolBtn.Text = "View/Edit symbol";
             editSymbolBtn.UseVisualStyleBackColor = true;
             editSymbolBtn.Visible = false;
+            editSymbolBtn.Click += editSymbolBtn_Click;
             // 
             // deleteSymbolBtn
             // 
@@ -186,7 +186,7 @@
             Controls.Add(pretraziBtn);
             Controls.Add(dataGridView1);
             Name = "Index";
-            Text = "Form1";
+            Text = "Index";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();

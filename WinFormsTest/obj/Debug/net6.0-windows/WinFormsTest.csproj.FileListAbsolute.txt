@@ -1,4 +1,5 @@
 C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\WinFormsTest.exe
+C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\WinFormsTest.dll.config
 C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\WinFormsTest.deps.json
 C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\WinFormsTest.runtimeconfig.json
 C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\WinFormsTest.dll
@@ -18,6 +19,9 @@ C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\runtimes\win-x86\native
 C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.csproj.AssemblyReference.cache
+C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Forms.AddSymbolForm.resources
+C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Index.resources
+C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Forms.UpdateForm.resources
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.csproj.GenerateResource.cache
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.GeneratedMSBuildEditorConfig.editorconfig
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.AssemblyInfoInputs.cache
@@ -29,6 +33,3 @@ C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\refint\WinFormsTest.dll
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.pdb
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.genruntimeconfig.cache
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\ref\WinFormsTest.dll
-C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\WinFormsTest.dll.config
-C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Index.resources
-C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Forms.AddSymbolForm.resources

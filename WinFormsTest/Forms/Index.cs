@@ -200,6 +200,7 @@ namespace WinFormsTest
         private void addSymbol_Click(object sender, EventArgs e)
         {
             AddSymbolForm addSymbolForm = new AddSymbolForm();
+            addSymbolForm.selectedDbPath = selectedDbPath;
 
             if (addSymbolForm.typeCb != null)
             {
@@ -219,7 +220,7 @@ namespace WinFormsTest
         private void deleteButton_Click(object sender, EventArgs e)
         {
             string message = "Da li zelite da obrisete Symbol(e)";
-            string title = "Close Window";
+            string title = "Upozorenje";
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             DialogResult result = MessageBox.Show(message, title, buttons);
             if (result == DialogResult.Yes)
@@ -263,5 +264,62 @@ namespace WinFormsTest
             }
         }
 
+        private void editSymbolBtn_Click(object sender, EventArgs e)
+        {
+            UpdateForm updateForm = new UpdateForm();
+            updateForm.selectedDbPath = selectedDbPath;
+
+            if (dataGridView1.SelectedRows.Count == 1)
+            {
+                try
+                {
+                    DataGridViewRow row = dataGridView1.SelectedRows[0];
+
+                    string name = (string)row.Cells[0].Value;
+                    string ticker = (string)row.Cells[1].Value;
+                    double price = (double)row.Cells[2].Value;
+                    string typeName = (string)row.Cells[3].Value;
+                    string exchangeName = (string)row.Cells[4].Value;
+
+
+                    openConnection();
+                    SQLiteCommand fmd = connect.CreateCommand();
+                    fmd.CommandType = CommandType.Text;
+                    fmd.CommandText = @"SELECT * FROM Symbol WHERE Name = '" + name + "' AND Ticker = '" + ticker + "' AND " +
+                                        "Price = @Price";
+                    fmd.Parameters.AddWithValue("@Price", price);
+
+                    SQLiteDataReader rdr = fmd.ExecuteReader();
+
+                    if (rdr.Read())
+                    {
+                        updateForm.id = (int)(long)rdr["Id"];
+                        updateForm.nameTb.Text = name;
+                        updateForm.tickerTb.Text = ticker;
+                        updateForm.isinTb.Text = (string)rdr["Isin"];
+                        updateForm.currencyCodeTb.Text = (string)rdr["CurrencyCode"];
+                        updateForm.priceTb.Text = price.ToString();
+                        updateForm.priceDateDp.Value = (DateTime)rdr["PriceDate"];
+
+                        updateForm.typeCb.Items.AddRange(Program.typeList.Select(x => x.Name).ToArray());
+                        updateForm.typeCb.SelectedText = typeName;
+
+                        updateForm.exchangeCb.Items.AddRange(Program.exchangeList.Select(x => x.Name).ToArray());
+                        updateForm.exchangeCb.SelectedText = exchangeName;
+
+                        rdr.Close();
+                        updateForm.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    closeConnection();
+                }
+            }
+        }
     }
 }
