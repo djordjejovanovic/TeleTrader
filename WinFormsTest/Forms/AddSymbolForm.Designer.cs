@@ -44,13 +44,15 @@
             exchangeCb = new ComboBox();
             button1 = new Button();
             button2 = new Button();
+            label7 = new Label();
+            priceDateDtp = new DateTimePicker();
             SuspendLayout();
             // 
             // addNameTb
             // 
             addNameTb.Location = new Point(174, 23);
             addNameTb.Name = "addNameTb";
-            addNameTb.Size = new Size(121, 23);
+            addNameTb.Size = new Size(193, 23);
             addNameTb.TabIndex = 0;
             // 
             // addNameLbl
@@ -101,7 +103,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(29, 260);
+            label5.Location = new Point(29, 305);
             label5.Name = "label5";
             label5.Size = new Size(34, 15);
             label5.TabIndex = 6;
@@ -110,7 +112,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(29, 311);
+            label6.Location = new Point(29, 351);
             label6.Name = "label6";
             label6.Size = new Size(61, 15);
             label6.TabIndex = 7;
@@ -120,49 +122,49 @@
             // 
             tickerTb.Location = new Point(174, 62);
             tickerTb.Name = "tickerTb";
-            tickerTb.Size = new Size(121, 23);
+            tickerTb.Size = new Size(193, 23);
             tickerTb.TabIndex = 8;
             // 
             // isinTb
             // 
             isinTb.Location = new Point(174, 111);
             isinTb.Name = "isinTb";
-            isinTb.Size = new Size(121, 23);
+            isinTb.Size = new Size(193, 23);
             isinTb.TabIndex = 9;
             // 
             // currencyCodeTb
             // 
             currencyCodeTb.Location = new Point(174, 162);
             currencyCodeTb.Name = "currencyCodeTb";
-            currencyCodeTb.Size = new Size(121, 23);
+            currencyCodeTb.Size = new Size(193, 23);
             currencyCodeTb.TabIndex = 10;
             // 
             // priceTb
             // 
             priceTb.Location = new Point(174, 206);
             priceTb.Name = "priceTb";
-            priceTb.Size = new Size(121, 23);
+            priceTb.Size = new Size(193, 23);
             priceTb.TabIndex = 11;
             // 
             // typeCb
             // 
             typeCb.FormattingEnabled = true;
-            typeCb.Location = new Point(174, 257);
+            typeCb.Location = new Point(174, 297);
             typeCb.Name = "typeCb";
-            typeCb.Size = new Size(121, 23);
+            typeCb.Size = new Size(193, 23);
             typeCb.TabIndex = 12;
             // 
             // exchangeCb
             // 
             exchangeCb.FormattingEnabled = true;
-            exchangeCb.Location = new Point(174, 303);
+            exchangeCb.Location = new Point(174, 343);
             exchangeCb.Name = "exchangeCb";
-            exchangeCb.Size = new Size(121, 23);
+            exchangeCb.Size = new Size(193, 23);
             exchangeCb.TabIndex = 13;
             // 
             // button1
             // 
-            button1.Location = new Point(29, 369);
+            button1.Location = new Point(29, 401);
             button1.Name = "button1";
             button1.Size = new Size(86, 32);
             button1.TabIndex = 14;
@@ -172,7 +174,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(204, 369);
+            button2.Location = new Point(204, 401);
             button2.Name = "button2";
             button2.Size = new Size(91, 32);
             button2.TabIndex = 15;
@@ -180,11 +182,29 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(29, 263);
+            label7.Name = "label7";
+            label7.Size = new Size(63, 15);
+            label7.TabIndex = 16;
+            label7.Text = "Price Date:";
+            // 
+            // priceDateDtp
+            // 
+            priceDateDtp.Location = new Point(174, 255);
+            priceDateDtp.Name = "priceDateDtp";
+            priceDateDtp.Size = new Size(193, 23);
+            priceDateDtp.TabIndex = 17;
+            // 
             // AddSymbolForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(365, 427);
+            ClientSize = new Size(439, 469);
+            Controls.Add(priceDateDtp);
+            Controls.Add(label7);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(exchangeCb);
@@ -202,7 +222,7 @@
             Controls.Add(addNameLbl);
             Controls.Add(addNameTb);
             Name = "AddSymbolForm";
-            Text = "AddSymbolForm";
+            Text = "Add Symbol";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -225,5 +245,7 @@
         public ComboBox exchangeCb;
         private Button button1;
         private Button button2;
+        private Label label7;
+        private DateTimePicker priceDateDtp;
     }
 }

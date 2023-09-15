@@ -12,8 +12,8 @@ namespace WinFormsTest
 {
     public partial class Index : Form
     {
-        private string selectedDbPath;
-        private static SQLiteConnection connect = new SQLiteConnection(@"Data Source=");
+        private string selectedDbPath = "";
+        private static SQLiteConnection connect = new SQLiteConnection();
 
         public Index()
         {
@@ -24,7 +24,6 @@ namespace WinFormsTest
         {
             openFileDialog1.ShowDialog();
             selectedDbPath = openFileDialog1.FileName;
-            Program.dbPath = selectedDbPath;
 
             try
             {
@@ -84,7 +83,7 @@ namespace WinFormsTest
                 exchangeLbl.Show();
                 cbExchange.Show();
 
-                pretraziBtn.Show();
+                filterBtn.Show();
 
             }
             catch (Exception ex)
@@ -110,10 +109,8 @@ namespace WinFormsTest
                 connect.Open();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void filterButton_Click(object sender, EventArgs e)
         {
-            if (Program.dbPath != null && Program.dbPath != "")
-                selectedDbPath = Program.dbPath;
 
             string type = (string)cbType.SelectedItem;
             string exchange = (string)cbExchange.SelectedItem;
@@ -192,15 +189,14 @@ namespace WinFormsTest
                 return query + " AND t.Name = '" + type + "'" + " AND e.Name = '" + exchange + "'";
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void closeApplication_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
         private void addSymbol_Click(object sender, EventArgs e)
         {
-            AddSymbolForm addSymbolForm = new AddSymbolForm();
-            addSymbolForm.selectedDbPath = selectedDbPath;
+            AddSymbolForm addSymbolForm = new AddSymbolForm(selectedDbPath);
 
             if (addSymbolForm.typeCb != null)
             {
@@ -266,8 +262,7 @@ namespace WinFormsTest
 
         private void editSymbolBtn_Click(object sender, EventArgs e)
         {
-            UpdateForm updateForm = new UpdateForm();
-            updateForm.selectedDbPath = selectedDbPath;
+            UpdateForm updateForm = new UpdateForm(selectedDbPath);
 
             if (dataGridView1.SelectedRows.Count == 1)
             {
@@ -302,10 +297,10 @@ namespace WinFormsTest
                         updateForm.priceDateDp.Value = (DateTime)rdr["PriceDate"];
 
                         updateForm.typeCb.Items.AddRange(Program.typeList.Select(x => x.Name).ToArray());
-                        updateForm.typeCb.SelectedText = typeName;
+                        updateForm.typeCb.SelectedItem = typeName;
 
                         updateForm.exchangeCb.Items.AddRange(Program.exchangeList.Select(x => x.Name).ToArray());
-                        updateForm.exchangeCb.SelectedText = exchangeName;
+                        updateForm.exchangeCb.SelectedItem = exchangeName;
 
                         rdr.Close();
                         updateForm.Show();

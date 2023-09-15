@@ -1,12 +1,12 @@
 using WinFormsTest.Models;
+using Type = WinFormsTest.Models.Type;
 
 namespace WinFormsTest
 {
     internal static class Program
     {
 
-        public static string? dbPath;
-        public static List<Models.Type> typeList = new List<Models.Type>();
+        public static List<Type> typeList = new List<Type>();
         public static List<Exchange> exchangeList = new List<Exchange>();
 
         /// <summary>

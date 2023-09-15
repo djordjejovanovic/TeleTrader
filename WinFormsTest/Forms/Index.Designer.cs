@@ -29,12 +29,11 @@
         private void InitializeComponent()
         {
             dataGridView1 = new DataGridView();
-            pretraziBtn = new Button();
+            filterBtn = new Button();
             typeLbl = new Label();
             cbType = new ComboBox();
             openFileDialog1 = new OpenFileDialog();
             selectPathBtn = new Button();
-            tfPath = new TextBox();
             exchangeLbl = new Label();
             cbExchange = new ComboBox();
             addSymbolBtn = new Button();
@@ -56,14 +55,14 @@
             // 
             // pretraziBtn
             // 
-            pretraziBtn.Location = new Point(422, 3);
-            pretraziBtn.Name = "pretraziBtn";
-            pretraziBtn.Size = new Size(121, 33);
-            pretraziBtn.TabIndex = 1;
-            pretraziBtn.Text = "Filter";
-            pretraziBtn.UseVisualStyleBackColor = true;
-            pretraziBtn.Visible = false;
-            pretraziBtn.Click += button1_Click;
+            filterBtn.Location = new Point(422, 3);
+            filterBtn.Name = "FilterBtn";
+            filterBtn.Size = new Size(121, 33);
+            filterBtn.TabIndex = 1;
+            filterBtn.Text = "Filter";
+            filterBtn.UseVisualStyleBackColor = true;
+            filterBtn.Visible = false;
+            filterBtn.Click += filterButton_Click;
             // 
             // typeLbl
             // 
@@ -90,21 +89,13 @@
             // 
             // selectPathBtn
             // 
-            selectPathBtn.Location = new Point(642, 12);
+            selectPathBtn.Location = new Point(642, 49);
             selectPathBtn.Name = "selectPathBtn";
             selectPathBtn.Size = new Size(137, 44);
             selectPathBtn.TabIndex = 4;
-            selectPathBtn.Text = "Select db Path";
+            selectPathBtn.Text = "Izaberi DB";
             selectPathBtn.UseVisualStyleBackColor = true;
             selectPathBtn.Click += selectPathBtn_Click;
-            // 
-            // tfPath
-            // 
-            tfPath.Location = new Point(605, 16);
-            tfPath.Name = "tfPath";
-            tfPath.Size = new Size(31, 23);
-            tfPath.TabIndex = 5;
-            tfPath.Visible = false;
             // 
             // exchangeLbl
             // 
@@ -166,7 +157,7 @@
             button1.TabIndex = 12;
             button1.Text = "Form Close";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click_1;
+            button1.Click += closeApplication_Click;
             // 
             // Index
             // 
@@ -179,11 +170,10 @@
             Controls.Add(addSymbolBtn);
             Controls.Add(cbExchange);
             Controls.Add(exchangeLbl);
-            Controls.Add(tfPath);
             Controls.Add(selectPathBtn);
             Controls.Add(cbType);
             Controls.Add(typeLbl);
-            Controls.Add(pretraziBtn);
+            Controls.Add(filterBtn);
             Controls.Add(dataGridView1);
             Name = "Index";
             Text = "Index";
@@ -195,12 +185,11 @@
         #endregion
 
         private DataGridView dataGridView1;
-        private Button pretraziBtn;
+        private Button filterBtn;
         private Label typeLbl;
         private ComboBox cbType;
         private OpenFileDialog openFileDialog1;
         private Button selectPathBtn;
-        private TextBox tfPath;
         private Label exchangeLbl;
         private ComboBox cbExchange;
         private Button addSymbolBtn;
