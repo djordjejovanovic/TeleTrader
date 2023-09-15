@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WinFormsTest.Models
 {
-    class Symbol
+    public class Symbol
     {
         public int Id { get; set; }
         public string Name { get; set; }

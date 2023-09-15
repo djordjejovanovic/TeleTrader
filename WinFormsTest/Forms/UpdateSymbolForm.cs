@@ -5,7 +5,6 @@ using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,18 +13,21 @@ using WinFormsTest.Repository;
 
 namespace WinFormsTest.Forms
 {
-    public partial class AddSymbolForm : Form
+    public partial class UpdateSymbolForm : Form
     {
+
+        public string selectedDbPath;
+        public SQLiteConnection connect;
         public SymbolRepository symbolRepo { get; set; }
         public TypeRepository typeRepo { get; set; }
         public ExchangeRepository exchangeRepo { get; set; }
 
-        public AddSymbolForm()
+        public UpdateSymbolForm()
         {
             InitializeComponent();
         }
 
-        public AddSymbolForm(SymbolRepository symbolRepo, TypeRepository typeRepo, ExchangeRepository exchangeRepo)
+        public UpdateSymbolForm(SymbolRepository symbolRepo, TypeRepository typeRepo, ExchangeRepository exchangeRepo)
         {
             this.symbolRepo = symbolRepo;
             this.typeRepo = typeRepo;
@@ -33,24 +35,25 @@ namespace WinFormsTest.Forms
             InitializeComponent();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void cancelBtn_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void updateSymbolBtn_Click(object sender, EventArgs e)
         {
             try
             {
                 Symbol symbol = new Symbol();
 
-                symbol.Name = !addNameTb.Text.Equals("") ? addNameTb.Text : throw new ArgumentException("Parameter cannot be null or empty", nameof(addNameTb.Text));
+                symbol.Id = id;
+                symbol.Name = !nameTb.Text.Equals("") ? nameTb.Text : throw new ArgumentException("Parameter cannot be null or empty", nameof(nameTb.Text));
                 symbol.Ticker = !tickerTb.Text.Equals("") ? tickerTb.Text : throw new ArgumentException("Parameter cannot be null or empty", nameof(tickerTb.Text));
                 symbol.Isin = !isinTb.Text.Equals("") ? isinTb.Text : throw new ArgumentException("Parameter cannot be null or empty", nameof(isinTb.Text));
                 symbol.CurrencyCode = !currencyCodeTb.Text.Equals("") ? currencyCodeTb.Text : throw new ArgumentException("Parameter cannot be null or empty", nameof(currencyCodeTb.Text));
                 symbol.DateAdded = DateTime.Now.Date;
                 symbol.Price = !priceTb.Text.Equals("") ? Convert.ToDouble(priceTb.Text) : throw new ArgumentException("Parameter cannot be null or empty", nameof(priceTb.Text));
-                symbol.PriceDate = priceDateDtp.Value;
+                symbol.PriceDate = priceDateDp.Value;
 
                 string type = (string)typeCb.SelectedItem;
                 symbol.TypeId = (int)typeRepo.typeList.Where(x => x.Name.Equals(type)).Select(x => x.Id).FirstOrDefault();
@@ -58,16 +61,15 @@ namespace WinFormsTest.Forms
                 string exchange = (string)exchangeCb.SelectedItem;
                 symbol.ExchangeId = (int)exchangeRepo.exchangeList.Where(x => x.Name.Equals(exchange)).Select(x => x.Id).FirstOrDefault();
 
-                bool ok = symbolRepo.createNewSymbol(symbol);
-                
+                bool ok = symbolRepo.updateSymbol(symbol);
+
                 if (ok)
                 {
-                    MessageBox.Show("Uspesno dodat Symbol.");
+                    MessageBox.Show("Uspesno promenjen Symbol.");
                     this.Close();
                 }
                 else
                     MessageBox.Show("Doslo je do greske! Pokusajte ponovo.");
-
             }
             catch (Exception ex)
             {

@@ -5,10 +5,6 @@ namespace WinFormsTest
 {
     internal static class Program
     {
-
-        public static List<Type> typeList = new List<Type>();
-        public static List<Exchange> exchangeList = new List<Exchange>();
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

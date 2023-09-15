@@ -2,11 +2,14 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Runtime.Intrinsics.Arm;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using WinFormsTest.Forms;
 using WinFormsTest.Models;
+using WinFormsTest.Repository;
+using Type = WinFormsTest.Models.Type;
 
 namespace WinFormsTest
 {
@@ -14,6 +17,9 @@ namespace WinFormsTest
     {
         private string selectedDbPath = "";
         private static SQLiteConnection connect = new SQLiteConnection();
+        private TypeRepository typeRepo;
+        private ExchangeRepository exchangeRepo;
+        private SymbolRepository symbolRepo;
 
         public Index()
         {
@@ -25,61 +31,30 @@ namespace WinFormsTest
             openFileDialog1.ShowDialog();
             selectedDbPath = openFileDialog1.FileName;
 
+            if (!selectedDbPath.Equals(""))
+            {
+                typeRepo = new TypeRepository(selectedDbPath);
+                exchangeRepo = new ExchangeRepository(selectedDbPath);
+                symbolRepo = new SymbolRepository(selectedDbPath);
+            }
+
             try
             {
-                connect = new SQLiteConnection(@"Data Source=" + selectedDbPath);
-                openConnection();
-
-                SQLiteCommand fmd = connect.CreateCommand();
-                fmd.CommandText = @"SELECT * FROM Type";
-                fmd.CommandType = CommandType.Text;
-                SQLiteDataReader rdr = fmd.ExecuteReader();
-
-                List<Models.Type> typelList = new List<Models.Type>();
                 cbType.Items.Clear();
                 cbType.Items.Add("All");
                 cbType.SelectedItem = "All";
+                List<Type> typelList = typeRepo.getAllTypes();
+                cbType.Items.AddRange(typelList.Select(x => x.Name).ToArray());
 
-                while (rdr.Read())
-                {
-                    Models.Type type = new Models.Type();
-                    type.Id = (int)(long)rdr["Id"];
-                    type.Name = (string)rdr["Name"];
-
-                    typelList.Add(type);        //nema potrebe, ali moze da posluzi da se ima ceo objekat
-                    cbType.Items.Add(type.Name);
-                }
-
-                if (typelList != null && typelList.Count != 0)
-                    Program.typeList = typelList;
-
-                rdr.Close();
                 typeLbl.Show();
                 cbType.Show();
 
-
-                fmd.CommandText = @"SELECT * FROM Exchange";
-                rdr = fmd.ExecuteReader();
-
-                List<Exchange> exchangelList = new List<Exchange>();
                 cbExchange.Items.Clear();
                 cbExchange.Items.Add("All");
                 cbExchange.SelectedItem = "All";
+                List<Exchange> exchangelList = exchangeRepo.getAllExchanges();
+                cbExchange.Items.AddRange(exchangelList.Select(x => x.Name).ToArray());
 
-                while (rdr.Read())
-                {
-                    Exchange exchange = new Exchange();
-                    exchange.Id = (int)(long)rdr["Id"];
-                    exchange.Name = (string)rdr["Name"];
-
-                    exchangelList.Add(exchange);
-                    cbExchange.Items.Add(exchange.Name);
-                }
-
-                if (exchangelList != null && exchangelList.Count != 0)
-                    Program.exchangeList = exchangelList;
-
-                rdr.Close();
                 exchangeLbl.Show();
                 cbExchange.Show();
 
@@ -90,23 +65,7 @@ namespace WinFormsTest
             {
                 Console.WriteLine(ex.Message);
             }
-            finally
-            {
-                closeConnection();
-            }
 
-        }
-
-        private void closeConnection()
-        {
-            if (connect != null && connect.State == ConnectionState.Open)
-                connect.Close();
-        }
-
-        private void openConnection()
-        {
-            if (connect != null && connect.State == ConnectionState.Closed)
-                connect.Open();
         }
 
         private void filterButton_Click(object sender, EventArgs e)
@@ -117,40 +76,18 @@ namespace WinFormsTest
 
             try
             {
-                openConnection();
 
-                SQLiteCommand fmd = connect.CreateCommand();
-                fmd.CommandText = createQuery(type, exchange);
-                fmd.CommandType = CommandType.Text;
-                SQLiteDataReader rdr = fmd.ExecuteReader();
-
-                List<SymbolViewModel> symbolList = new List<SymbolViewModel>();
-                while (rdr.Read())
+                List<Symbol> symbolList = symbolRepo.getFilteredSymbols(type, exchange);
+                List<SymbolViewModel> symbolViewModelList = new List<SymbolViewModel>();
+                
+                foreach (Symbol symbol in symbolList)
                 {
-
-                    Symbol symbol = new Symbol();
-
-                    symbol.Id = (int)(long)rdr["Id"];
-                    symbol.Name = (string)rdr["Name"];
-                    symbol.Ticker = (string)rdr["Ticker"];
-                    symbol.Isin = (string)rdr["Isin"];
-                    symbol.CurrencyCode = (string)rdr["CurrencyCode"];
-                    symbol.DateAdded = (DateTime)rdr["DateAdded"];
-                    symbol.Price = (double)rdr["Price"];
-                    symbol.PriceDate = (DateTime)rdr["PriceDate"];
-                    symbol.TypeId = (int)rdr["TypeId"];
-                    symbol.ExchangeId = (int)rdr["ExchangeId"];
-                    symbol.TypeName = (string)rdr[11];
-                    symbol.ExchangeName = (string)rdr[13];
-
                     SymbolViewModel swm = new SymbolViewModel(symbol.Name, symbol.Ticker, symbol.Price, symbol.TypeName, symbol.ExchangeName);
-                    symbolList.Add(swm);
-
+                    symbolViewModelList.Add(swm);
                 }
-                rdr.Close();
 
                 BindingSource binding = new BindingSource();
-                binding.DataSource = symbolList;
+                binding.DataSource = symbolViewModelList;
                 dataGridView1.DataSource = binding;
 
                 if (!addSymbolBtn.Visible)
@@ -164,29 +101,6 @@ namespace WinFormsTest
             {
                 Console.WriteLine(ex.Message);
             }
-            finally
-            {
-                closeConnection();
-            }
-        }
-
-        private string createQuery(string type, string exchange)
-        {
-            if (type == null || exchange == null)
-                return "";
-
-            string query = @"SELECT * 
-                            FROM Symbol s, Type t, Exchange e
-                            WHERE s.TypeId = t.Id AND s.ExchangeId = e.Id";
-
-            if (type.Equals("All") && exchange.Equals("All"))
-                return query;
-            else if (type.Equals("All") && !exchange.Equals("All"))
-                return query + " AND e.Name = '" + exchange + "'";
-            else if (!type.Equals("All") && exchange.Equals("All"))
-                return query + " AND t.Name = '" + type + "'";
-            else
-                return query + " AND t.Name = '" + type + "'" + " AND e.Name = '" + exchange + "'";
         }
 
         private void closeApplication_Click(object sender, EventArgs e)
@@ -196,26 +110,26 @@ namespace WinFormsTest
 
         private void addSymbol_Click(object sender, EventArgs e)
         {
-            AddSymbolForm addSymbolForm = new AddSymbolForm(selectedDbPath);
+            AddSymbolForm addSymbolForm = new AddSymbolForm(symbolRepo, typeRepo, exchangeRepo);
 
             if (addSymbolForm.typeCb != null)
             {
-                addSymbolForm.typeCb.Items.AddRange(Program.typeList.Select(x => x.Name).ToArray());
+                addSymbolForm.typeCb.Items.AddRange(typeRepo.typeList.Select(x => x.Name).ToArray());
                 addSymbolForm.typeCb.SelectedIndex = 0;
             }
 
             if (addSymbolForm.exchangeCb != null)
             {
-                addSymbolForm.exchangeCb.Items.AddRange(Program.exchangeList.Select(x => x.Name).ToArray());
+                addSymbolForm.exchangeCb.Items.AddRange(exchangeRepo.exchangeList.Select(x => x.Name).ToArray());
                 addSymbolForm.exchangeCb.SelectedIndex = 0;
             }
 
             addSymbolForm.Show();
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
+        private void deleteSymbolButton_Click(object sender, EventArgs e)
         {
-            string message = "Da li zelite da obrisete Symbol(e)";
+            string message = "Da li ste sigurni da zelite da obrisete Symbol(e)";
             string title = "Upozorenje";
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             DialogResult result = MessageBox.Show(message, title, buttons);
@@ -226,35 +140,26 @@ namespace WinFormsTest
                     {
                         try
                         {
-                            string name = (string)row.Cells[0].Value;
-                            string ticker = (string)row.Cells[1].Value;
-                            double price = (double)row.Cells[2].Value;
-                            string typeName = (string)row.Cells[3].Value;
-                            string exchangeName = (string)row.Cells[4].Value;
+                            Symbol symbol = new Symbol();
+                            symbol.Name = (string)row.Cells[0].Value;
+                            symbol.Ticker = (string)row.Cells[1].Value;
+                            symbol.Price = (double)row.Cells[2].Value;
+                            symbol.TypeName = (string)row.Cells[3].Value;
+                            symbol.ExchangeName = (string)row.Cells[4].Value;
 
-                            openConnection();
+                            bool ok = symbolRepo.deleteSymbol(symbol);
 
-                            SQLiteCommand fmd = connect.CreateCommand();
-                            fmd.CommandType = CommandType.Text;
-                            fmd.CommandText = @"DELETE FROM Symbol WHERE Name = '" + name + "' AND Ticker = '" + ticker + "' AND " +
-                                                "Price = @Price";
-                            fmd.Parameters.AddWithValue("@Price", price);
-
-                            int rows = fmd.ExecuteNonQuery();
-                            if (rows == 0)
+                            if (!ok)
                             {
-                                MessageBox.Show("Doslo je do greske! " + name + " nije obrisan.");
+                                MessageBox.Show("Doslo je do greske! " + symbol.Name + " nije obrisan.");
                             }
                             else
                                 dataGridView1.Rows.RemoveAt(row.Index);
+
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex.Message);
-                        }
-                        finally
-                        {
-                            closeConnection();
                         }
                     }
             }
@@ -262,7 +167,7 @@ namespace WinFormsTest
 
         private void editSymbolBtn_Click(object sender, EventArgs e)
         {
-            UpdateForm updateForm = new UpdateForm(selectedDbPath);
+            UpdateSymbolForm updateForm = new UpdateSymbolForm(symbolRepo, typeRepo, exchangeRepo);
 
             if (dataGridView1.SelectedRows.Count == 1)
             {
@@ -270,49 +175,35 @@ namespace WinFormsTest
                 {
                     DataGridViewRow row = dataGridView1.SelectedRows[0];
 
-                    string name = (string)row.Cells[0].Value;
-                    string ticker = (string)row.Cells[1].Value;
-                    double price = (double)row.Cells[2].Value;
-                    string typeName = (string)row.Cells[3].Value;
-                    string exchangeName = (string)row.Cells[4].Value;
+                    Symbol symbol = new Symbol();
 
+                    symbol.Name = (string)row.Cells[0].Value;
+                    symbol.Ticker = (string)row.Cells[1].Value;
+                    symbol.Price = (double)row.Cells[2].Value;
+                    symbol.TypeName = (string)row.Cells[3].Value;
+                    symbol.ExchangeName = (string)row.Cells[4].Value;
 
-                    openConnection();
-                    SQLiteCommand fmd = connect.CreateCommand();
-                    fmd.CommandType = CommandType.Text;
-                    fmd.CommandText = @"SELECT * FROM Symbol WHERE Name = '" + name + "' AND Ticker = '" + ticker + "' AND " +
-                                        "Price = @Price";
-                    fmd.Parameters.AddWithValue("@Price", price);
+                    symbol = symbolRepo.getSymbolByNameByTickerByPrice(symbol);
 
-                    SQLiteDataReader rdr = fmd.ExecuteReader();
+                    updateForm.id = symbol.Id;
+                    updateForm.nameTb.Text = symbol.Name;
+                    updateForm.tickerTb.Text = symbol.Ticker;
+                    updateForm.isinTb.Text = symbol.Isin;
+                    updateForm.currencyCodeTb.Text = symbol.CurrencyCode;
+                    updateForm.priceTb.Text = symbol.Price.ToString();
+                    updateForm.priceDateDp.Value = symbol.PriceDate;
 
-                    if (rdr.Read())
-                    {
-                        updateForm.id = (int)(long)rdr["Id"];
-                        updateForm.nameTb.Text = name;
-                        updateForm.tickerTb.Text = ticker;
-                        updateForm.isinTb.Text = (string)rdr["Isin"];
-                        updateForm.currencyCodeTb.Text = (string)rdr["CurrencyCode"];
-                        updateForm.priceTb.Text = price.ToString();
-                        updateForm.priceDateDp.Value = (DateTime)rdr["PriceDate"];
+                    updateForm.typeCb.Items.AddRange(typeRepo.typeList.Select(x => x.Name).ToArray());
+                    updateForm.typeCb.SelectedItem = symbol.TypeName;
 
-                        updateForm.typeCb.Items.AddRange(Program.typeList.Select(x => x.Name).ToArray());
-                        updateForm.typeCb.SelectedItem = typeName;
+                    updateForm.exchangeCb.Items.AddRange(exchangeRepo.exchangeList.Select(x => x.Name).ToArray());
+                    updateForm.exchangeCb.SelectedItem = symbol.ExchangeName;
 
-                        updateForm.exchangeCb.Items.AddRange(Program.exchangeList.Select(x => x.Name).ToArray());
-                        updateForm.exchangeCb.SelectedItem = exchangeName;
-
-                        rdr.Close();
-                        updateForm.Show();
-                    }
+                    updateForm.Show();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    closeConnection();
                 }
             }
         }

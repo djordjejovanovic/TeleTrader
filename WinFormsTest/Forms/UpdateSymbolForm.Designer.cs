@@ -1,6 +1,6 @@
 ﻿namespace WinFormsTest.Forms
 {
-    partial class UpdateForm
+    partial class UpdateSymbolForm
     {
         /// <summary>
         /// Required designer variable.
@@ -186,7 +186,7 @@
             saveBtn.TabIndex = 16;
             saveBtn.Text = "Save";
             saveBtn.UseVisualStyleBackColor = true;
-            saveBtn.Click += saveBtn_Click;
+            saveBtn.Click += updateSymbolBtn_Click;
             // 
             // cancelBtn
             // 

@@ -147,7 +147,7 @@
             deleteSymbolBtn.Text = "Delete symbol";
             deleteSymbolBtn.UseVisualStyleBackColor = true;
             deleteSymbolBtn.Visible = false;
-            deleteSymbolBtn.Click += deleteButton_Click;
+            deleteSymbolBtn.Click += deleteSymbolButton_Click;
             // 
             // button1
             // 

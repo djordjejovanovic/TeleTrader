@@ -7,7 +7,7 @@
     <Compile Update="Forms\Index.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\UpdateForm.cs">
+    <Compile Update="Forms\UpdateSymbolForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

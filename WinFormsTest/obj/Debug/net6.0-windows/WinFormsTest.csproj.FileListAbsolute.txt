@@ -21,7 +21,7 @@ C:\TeleTrader\Proj\WinFormsTest\bin\Debug\net6.0-windows\runtimes\win\lib\netcor
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.csproj.AssemblyReference.cache
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Forms.AddSymbolForm.resources
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Index.resources
-C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Forms.UpdateForm.resources
+C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.Forms.UpdateSymbolForm.resources
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.csproj.GenerateResource.cache
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.GeneratedMSBuildEditorConfig.editorconfig
 C:\TeleTrader\Proj\WinFormsTest\obj\Debug\net6.0-windows\WinFormsTest.AssemblyInfoInputs.cache
