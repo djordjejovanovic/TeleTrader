@@ -13,12 +13,10 @@ namespace WinFormsTest.Repository
 {
     public class SymbolRepository
     {
-        private string selectedDbPath;
         private SQLiteConnection connect;
 
         public SymbolRepository(string selectedDbPath)
         {
-            this.selectedDbPath = selectedDbPath;
             this.connect = new SQLiteConnection(@"Data Source=" + selectedDbPath);
         }
 
@@ -50,7 +48,7 @@ namespace WinFormsTest.Repository
                 {
                     Symbol symbol = new Symbol();
 
-                    symbol.Id = (int)(long)rdr["Id"];
+                    symbol.Id = Convert.ToInt32(rdr["Id"]);
                     symbol.Name = (string)rdr["Name"];
                     symbol.Ticker = (string)rdr["Ticker"];
                     symbol.Isin = (string)rdr["Isin"];
@@ -185,7 +183,7 @@ namespace WinFormsTest.Repository
 
                 if (rdr.Read())
                 {
-                    symbol.Id = (int)(long)rdr["Id"];
+                    symbol.Id = Convert.ToInt32(rdr["Id"]);
                     symbol.Isin = (string)rdr["Isin"];
                     symbol.CurrencyCode = (string)rdr["CurrencyCode"];
                     symbol.PriceDate = (DateTime)rdr["PriceDate"];

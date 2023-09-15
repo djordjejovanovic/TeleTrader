@@ -1,11 +1,4 @@
-using System;
-using System.Configuration;
 using System.Data;
-using System.Data.SQLite;
-using System.Diagnostics;
-using System.Runtime.Intrinsics.Arm;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using WinFormsTest.Forms;
 using WinFormsTest.Models;
 using WinFormsTest.Repository;
@@ -15,8 +8,6 @@ namespace WinFormsTest
 {
     public partial class Index : Form
     {
-        private string selectedDbPath = "";
-        private static SQLiteConnection connect = new SQLiteConnection();
         private TypeRepository typeRepo;
         private ExchangeRepository exchangeRepo;
         private SymbolRepository symbolRepo;
@@ -29,7 +20,7 @@ namespace WinFormsTest
         private void selectPathBtn_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
-            selectedDbPath = openFileDialog1.FileName;
+            string selectedDbPath = openFileDialog1.FileName;
 
             if (!selectedDbPath.Equals(""))
             {
